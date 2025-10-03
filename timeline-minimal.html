@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Minimal - Plan de Despliegue Bancolombia</title>
+    <link rel="stylesheet" href="https://cdn.lineicons.com/3.0/lineicons.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body { 
+            font-family: 'Georgia', 'Times New Roman', serif; 
+            margin: 0;
+            padding: 20px;
+            background-color: #fefefe;
+            color: #333;
+            line-height: 1.7;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            color: #3498db;
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            border-bottom-color: #3498db;
+        }
+        
+        .controls {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 2px;
+        }
+        
+        .controls select, .controls button {
+            margin: 0 10px;
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+        
+        .controls button {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .controls button:hover {
+            background: #34495e;
+        }
+        
+        .timeline-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Minimal Timeline Styles */
+        .minimal-timeline {
+            background: white;
+            padding: 40px;
+            border: 1px solid #e1e8ed;
+        }
+        
+        .timeline-entry {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px 0;
+            border-bottom: 1px solid #f5f5f5;
+            transition: all 0.2s ease;
+        }
+        
+        .timeline-entry:last-child {
+            border-bottom: none;
+        }
+        
+        .timeline-entry:hover {
+            background: #fafbfc;
+            margin: 0 -20px;
+            padding: 15px 20px;
+        }
+        
+        .entry-marker {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 20px;
+            margin-top: 4px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+        }
+        
+        .entry-content {
+            flex: 1;
+        }
+        
+        .entry-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+        
+        .entry-meta {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+            gap: 15px;
+        }
+        
+        .entry-week {
+            font-weight: 500;
+        }
+        
+        .entry-count {
+            background: #ecf0f1;
+            color: #2c3e50;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+        
+        .entry-description {
+            font-size: 0.9rem;
+            color: #5a6c7d;
+            font-style: italic;
+        }
+        
+        /* Status Colors */
+        .status-completed .entry-marker { 
+            background: #27ae60; 
+        }
+        .status-completed .entry-title { 
+            color: #27ae60; 
+        }
+        
+        .status-progress .entry-marker { 
+            background: #f39c12; 
+        }
+        .status-progress .entry-title { 
+            color: #f39c12; 
+        }
+        
+        .status-pending .entry-marker { 
+            background: #e74c3c; 
+        }
+        .status-pending .entry-title { 
+            color: #e74c3c; 
+        }
+        
+        /* Summary */
+        .summary {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+        }
+        
+        .summary-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .summary-text {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+        }
+        
+        .summary-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+        }
+        
+        .summary-stat {
+            text-align: center;
+        }
+        
+        .stat-num {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2c3e50;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Typography refinements */
+        .entry-title {
+            font-feature-settings: "liga", "kern";
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .minimal-timeline {
+                padding: 20px;
+            }
+            
+            .summary-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .entry-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .controls select, .controls button {
+                display: block;
+                width: 200px;
+                margin: 5px auto;
+            }
+        }
+        
+        /* Print styles */
+        @media print {
+            .controls, .back-btn {
+                display: none;
+            }
+            
+            .minimal-timeline {
+                border: none;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index-main.html" class="back-btn">← Regresar al selector</a>
+    
+    <div class="header">
+        <h1>Timeline Minimal</h1>
+        <p>Plan de Despliegue Bancolombia — Vista simplificada</p>
+    </div>
+    
+    <div class="summary" id="summary-section">
+        <!-- Summary will be generated here -->
+    </div>
+    
+    <div class="controls">
+        <select id="task-filter-m" onchange="filterTasks()">
+            <option value="all">Todas las tareas</option>
+            <option value="Completada">Completadas</option>
+            <option value="En progreso">En progreso</option>
+            <option value="No iniciada">No iniciadas</option>
+        </select>
+        
+        <select id="sort-by-m" onchange="sortTasks()">
+            <option value="week">Ordenar por semana</option>
+            <option value="status">Ordenar por estado</option>
+            <option value="name">Ordenar alfabéticamente</option>
+        </select>
+        
+        <button onclick="saveAsImage()">Exportar imagen</button>
+    </div>
+    
+    <div class="timeline-container">
+        <div class="minimal-timeline" id="timeline-container">
+            <!-- Timeline entries will be generated here -->
+        </div>
+    </div>
+
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script>
+        let ranges = [
+            { id: 1, start: '2025-09-22', end: '2025-09-26', label: 'Semana 1: 22-26 Sep' },
+            { id: 2, start: '2025-09-29', end: '2025-10-03', label: 'Semana 2: 29 Sep - 03 Oct' },
+            { id: 3, start: '2025-10-06', end: '2025-10-10', label: 'Semana 3: 06-10 Oct' }
+        ];
+        
+        let tasks = [
+            { id: 1, name: 'Migración políticas Ranger QA1 a QA2', count: 8, rangeId: 1, description: 'Completada' },
+            { id: 2, name: 'Configuración Kafka QA1/QA2 con LB/Kerberos/TLS', count: 4, rangeId: 1, description: 'Completada' },
+            { id: 3, name: 'Pruebas conexión Kafka NLB y conectividad', count: 6, rangeId: 1, description: 'Completada' },
+            { id: 4, name: 'Creación entornos QA2 (Kafka, Data Eng, Data Mart)', count: 3, rangeId: 1, description: 'Completada' },
+            { id: 5, name: 'Configurar políticas Ranger para SRM', count: 3, rangeId: 2, description: 'Completada' },
+            { id: 6, name: 'Pruebas listado tópicos Kafka', count: 4, rangeId: 2, description: 'Completada' },
+            { id: 7, name: 'Configuración SRM bidireccional', count: 2, rangeId: 2, description: 'Completada' },
+            { id: 8, name: 'Pre-checks y validación NLB Kafka HA', count: 3, rangeId: 2, description: 'Completada' },
+            { id: 9, name: 'Failover: AZ impairment / NLB target loss', count: 1, rangeId: 2, description: 'En progreso' },
+            { id: 10, name: 'Network flap / connection churn', count: 1, rangeId: 2, description: 'En progreso' },
+            { id: 11, name: 'Failback (broker returns)', count: 1, rangeId: 2, description: 'En progreso' },
+            { id: 12, name: 'Data integrity checks', count: 1, rangeId: 2, description: 'En progreso' },
+            { id: 13, name: 'Security/TLS validation', count: 1, rangeId: 3, description: 'No iniciada' },
+            { id: 14, name: 'SRM outage', count: 1, rangeId: 3, description: 'No iniciada' },
+            { id: 15, name: 'Observability & alarms', count: 1, rangeId: 3, description: 'No iniciada' },
+            { id: 16, name: 'Consumer crash/restart', count: 1, rangeId: 3, description: 'No iniciada' }
+        ];
+
+        let currentTasks = [...tasks];
+
+        function updateSummary(filteredTasks) {
+            const stats = {
+                total: filteredTasks.length,
+                completed: filteredTasks.filter(t => t.description === 'Completada').length,
+                progress: filteredTasks.filter(t => t.description === 'En progreso').length,
+                pending: filteredTasks.filter(t => t.description === 'No iniciada').length
+            };
+
+            const completedPercentage = stats.total > 0 ? Math.round(stats.completed / stats.total * 100) : 0;
+
+            const summarySection = document.getElementById('summary-section');
+            summarySection.innerHTML = `
+                <div class="summary-title">Resumen del Proyecto</div>
+                <div class="summary-text">
+                    Se han completado ${stats.completed} de ${stats.total} tareas programadas (${completedPercentage}% del progreso total).
+                    ${stats.progress > 0 ? `Actualmente hay ${stats.progress} tareas en desarrollo` : 'No hay tareas en desarrollo en este momento'}.
+                </div>
+                <div class="summary-stats">
+                    <div class="summary-stat">
+                        <span class="stat-num">${stats.completed}</span>
+                        <span class="stat-label">Completadas</span>
+                    </div>
+                    <div class="summary-stat">
+                        <span class="stat-num">${stats.progress}</span>
+                        <span class="stat-label">En Progreso</span>
+                    </div>
+                    <div class="summary-stat">
+                        <span class="stat-num">${stats.pending}</span>
+                        <span class="stat-label">Pendientes</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function drawMinimalTimeline(filteredTasks) {
+            const container = document.getElementById('timeline-container');
+            container.innerHTML = '';
+
+            if (filteredTasks.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #7f8c8d; padding: 40px; font-style: italic;">No se encontraron tareas con los criterios seleccionados.</div>';
+                return;
+            }
+
+            filteredTasks.forEach((task, index) => {
+                const range = ranges.find(r => r.id === task.rangeId);
+                
+                let iconSymbol = '●';
+                let statusClass = 'status-pending';
+                
+                if (task.description === 'Completada') {
+                    iconSymbol = '✓';
+                    statusClass = 'status-completed';
+                } else if (task.description === 'En progreso') {
+                    iconSymbol = '○';
+                    statusClass = 'status-progress';
+                }
+
+                const entry = document.createElement('div');
+                entry.className = `timeline-entry ${statusClass} fade-in`;
+                entry.style.animationDelay = `${index * 0.1}s`;
+                
+                entry.innerHTML = `
+                    <div class="entry-marker">${iconSymbol}</div>
+                    <div class="entry-content">
+                        <div class="entry-title">${task.name}</div>
+                        <div class="entry-meta">
+                            <span class="entry-week">${range ? range.label : 'Semana desconocida'}</span>
+                            <span class="entry-count">${task.count} elemento${task.count !== 1 ? 's' : ''}</span>
+                            <span>${task.description}</span>
+                        </div>
+                        <div class="entry-description">
+                            ${task.description === 'Completada' ? 'Objetivos alcanzados satisfactoriamente.' : 
+                              task.description === 'En progreso' ? 'Desarrollo en curso, progreso continuo.' : 
+                              'Programada para ejecución futura.'}
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(entry);
+            });
+
+            updateSummary(filteredTasks);
+        }
+
+        function filterTasks() {
+            const filter = document.getElementById('task-filter-m').value;
+            
+            if (filter === 'all') {
+                currentTasks = [...tasks];
+            } else {
+                currentTasks = tasks.filter(task => task.description === filter);
+            }
+            
+            sortTasks();
+        }
+
+        function sortTasks() {
+            const sortBy = document.getElementById('sort-by-m').value;
+            
+            switch(sortBy) {
+                case 'week':
+                    currentTasks.sort((a, b) => a.rangeId - b.rangeId);
+                    break;
+                case 'status':
+                    const statusOrder = { 'Completada': 1, 'En progreso': 2, 'No iniciada': 3 };
+                    currentTasks.sort((a, b) => statusOrder[a.description] - statusOrder[b.description]);
+                    break;
+                case 'name':
+                    currentTasks.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+            }
+            
+            drawMinimalTimeline(currentTasks);
+        }
+
+        function saveAsImage() {
+            const element = document.querySelector('body');
+            
+            setTimeout(() => {
+                html2canvas(element, {
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#fefefe',
+                    scale: 1.5,
+                    width: window.innerWidth,
+                    height: element.scrollHeight
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'timeline-minimal-' + new Date().toISOString().slice(0,10) + '.png';
+                    link.href = canvas.toDataURL('image/png', 0.9);
+                    
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    alert('Imagen exportada exitosamente.');
+                }).catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al exportar la imagen: ' + error.message);
+                });
+            }, 300);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            filterTasks();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Horizontal - Plan de Despliegue Bancolombia</title>
+    <link rel="stylesheet" href="https://cdn.lineicons.com/3.0/lineicons.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body { 
+            font-family: 'Arial', sans-serif; 
+            margin: 0;
+            padding: 20px;
+            background-color: #f6f9fc;
+            min-height: 100vh;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn:hover {
+            background: #0056b3;
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .controls label {
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .controls select, .controls button {
+            margin-right: 15px;
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .controls button {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .controls button:hover {
+            background: #0056b3;
+        }
+        
+        /* Timeline Horizontal Styles */
+        .ps-timeline-sec {
+            position: relative;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .ps-timeline-sec .container {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .ps-timeline-sec ol:before {
+            background: #348e80;
+            content: "";
+            width: 10px;
+            height: 10px;
+            border-radius: 100%;
+            position: absolute;
+            left: 8px;
+            top: 49.5%;
+        }
+
+        .ps-timeline-sec ol:after {
+            background: #348e80;
+            content: "";
+            width: 10px;
+            height: 10px;
+            border-radius: 100%;
+            position: absolute;
+            right: 8px;
+            top: 49.5%;
+        }
+
+        .ps-timeline {
+            margin: 200px 0;
+            padding: 0;
+            border-top: 2px solid #348e80;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .ps-timeline li {
+            flex: 1;
+            padding-top: 30px;
+            position: relative;
+            text-align: center;
+        }
+
+        .ps-timeline li span {
+            width: 50px;
+            height: 50px;
+            margin-left: -25px;
+            background: white;
+            border: 4px solid #348e80;
+            border-radius: 50%;
+            box-shadow: 0 0 0 0px white;
+            text-align: center;
+            line-height: 42px;
+            color: #df8625;
+            font-size: 1.5em;
+            font-weight: bold;
+            font-style: normal;
+            position: absolute;
+            top: -26px;
+            left: 50%;
+        }
+
+        .ps-timeline li span.ps-sp-top:before {
+            content: '';
+            color: #348e80;
+            width: 2px;
+            height: 50px;
+            background: #348e80;
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            margin-left: -1px;
+        }
+
+        .ps-timeline li span.ps-sp-top:after {
+            content: '';
+            color: #348e80;
+            width: 8px;
+            height: 8px;
+            background: #348e80;
+            position: absolute;
+            bottom: 90px;
+            left: 44%;
+            border-radius: 100%;
+        }
+
+        .ps-timeline li span.ps-sp-bot:before {
+            content: '';
+            color: #348e80;
+            width: 2px;
+            height: 50px;
+            background: #348e80;
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            margin-left: -1px;
+        }
+
+        .ps-timeline li span.ps-sp-bot:after {
+            content: '';
+            color: #348e80;
+            width: 8px;
+            height: 8px;
+            background: #348e80;
+            position: absolute;
+            top: 90px;
+            left: 44%;
+            border-radius: 100%;
+        }
+
+        .img-handler-top {
+            position: absolute;
+            bottom: 0;
+            margin-bottom: 130px;
+            width: 100%;
+        }
+
+        .img-handler-top .status-icon {
+            display: block;
+            margin: 0 auto;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            line-height: 60px;
+            font-size: 24px;
+            color: white;
+            text-align: center;
+        }
+
+        .img-handler-bot {
+            position: absolute;
+            margin-top: 60px;
+            width: 100%;
+        }
+
+        .img-handler-bot .status-icon {
+            display: block;
+            margin: 0 auto;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            line-height: 60px;
+            font-size: 24px;
+            color: white;
+            text-align: center;
+        }
+
+        .ps-timeline li p {
+            text-align: center;
+            width: 80%;
+            margin: 0 auto;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .ps-top {
+            position: absolute;
+            bottom: 0;
+            margin-bottom: 100px;
+        }
+
+        .ps-bot {
+            position: absolute;
+            margin-top: 35px;
+        }
+
+        /* Status Colors */
+        .status-completed { background: #4caf50; }
+        .status-progress { background: #ff9800; }
+        .status-pending { background: #f44336; }
+
+        /* Color Themes */
+        .theme-blue .ps-timeline {
+            border-top-color: #4285f4;
+        }
+        .theme-blue .ps-timeline li span {
+            border-color: #4285f4;
+            color: #1976d2;
+        }
+        .theme-blue .ps-timeline-sec ol:before,
+        .theme-blue .ps-timeline-sec ol:after,
+        .theme-blue .ps-timeline li span.ps-sp-top:before,
+        .theme-blue .ps-timeline li span.ps-sp-top:after,
+        .theme-blue .ps-timeline li span.ps-sp-bot:before,
+        .theme-blue .ps-timeline li span.ps-sp-bot:after {
+            background: #4285f4;
+        }
+
+        .theme-green .ps-timeline {
+            border-top-color: #4caf50;
+        }
+        .theme-green .ps-timeline li span {
+            border-color: #4caf50;
+            color: #2e7d32;
+        }
+        .theme-green .ps-timeline-sec ol:before,
+        .theme-green .ps-timeline-sec ol:after,
+        .theme-green .ps-timeline li span.ps-sp-top:before,
+        .theme-green .ps-timeline li span.ps-sp-top:after,
+        .theme-green .ps-timeline li span.ps-sp-bot:before,
+        .theme-green .ps-timeline li span.ps-sp-bot:after {
+            background: #4caf50;
+        }
+
+        /* Responsive */
+        @media screen and (max-width: 767px) {
+            .ps-timeline-sec ol:before {
+                background: #348e80;
+                content: "";
+                width: 10px;
+                height: 10px;
+                border-radius: 100%;
+                position: absolute;
+                top: 130px !important;
+                left: 36px !important;
+            }
+
+            .ps-timeline-sec ol:after {
+                background: #348e80;
+                content: "";
+                width: 10px;
+                height: 10px;
+                border-radius: 100%;
+                position: absolute;
+                top: inherit !important;
+                left: 36px;
+            }
+
+            .ps-timeline {
+                margin: 130px 0 !important;
+                border-left: 2px solid #348e80;
+                border-top: 0 !important;
+                margin-left: 25px !important;
+                padding-left: 0 !important;
+                padding-top: 120px !important;
+                flex-direction: column;
+            }
+
+            .ps-timeline li {
+                height: 220px;
+                width: 100% !important;
+                text-align: left;
+            }
+
+            .ps-timeline li span {
+                left: 0 !important;
+                margin-left: 0;
+            }
+
+            .ps-timeline li span.ps-sp-top:before,
+            .ps-timeline li span.ps-sp-top:after,
+            .ps-timeline li span.ps-sp-bot:before,
+            .ps-timeline li span.ps-sp-bot:after {
+                content: none !important;
+            }
+
+            .img-handler-top {
+                position: absolute !important;
+                bottom: 150px !important;
+                width: 30% !important;
+                margin-left: 35px !important;
+                margin-bottom: 0 !important;
+            }
+
+            .img-handler-bot {
+                position: absolute !important;
+                bottom: 115px !important;
+                width: 30% !important;
+                margin-left: 35px !important;
+                margin-bottom: 0 !important;
+                margin-top: 0 !important;
+            }
+
+            .ps-top, .ps-bot {
+                width: 60% !important;
+                float: right !important;
+                right: 0;
+                top: -40px;
+                position: absolute;
+                margin: 0;
+            }
+
+            .ps-timeline li p {
+                text-align: left !important;
+                width: 100% !important;
+                margin: 0 auto !important;
+                margin-top: 0px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index-main.html" class="back-btn">← Volver al Selector</a>
+    
+    <div class="header">
+        <h1>Timeline Horizontal - Plan de Despliegue</h1>
+    </div>
+    
+    <div class="controls">
+        <label for="color-theme-h">Tema:</label>
+        <select id="color-theme-h" onchange="changeColorTheme()">
+            <option value="default">🎨 Predeterminado</option>
+            <option value="blue">🔵 Azul</option>
+            <option value="green">🟢 Verde</option>
+        </select>
+        
+        <label for="task-filter-h">Filtrar:</label>
+        <select id="task-filter-h" onchange="filterTasks()">
+            <option value="all">📋 Todas</option>
+            <option value="Completada">✅ Completadas</option>
+            <option value="En progreso">🔄 En progreso</option>
+            <option value="No iniciada">⏸️ No iniciadas</option>
+        </select>
+        
+        <button onclick="saveAsImage()">📸 Guardar Imagen</button>
+    </div>
+    
+    <div id="timeline-container">
+        <section class="ps-timeline-sec">
+            <div class="container">
+                <ol class="ps-timeline" id="horizontal-timeline">
+                    <!-- Content will be generated by JavaScript -->
+                </ol>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script>
+        let ranges = [
+            { id: 1, start: '2025-09-22', end: '2025-09-26', label: 'Semana 1: 22-26 Sep' },
+            { id: 2, start: '2025-09-29', end: '2025-10-03', label: 'Semana 2: 29 Sep - 03 Oct' },
+            { id: 3, start: '2025-10-06', end: '2025-10-10', label: 'Semana 3: 06-10 Oct' }
+        ];
+        
+        let tasks = [
+            { id: 1, name: 'Migración políticas Ranger QA1 a QA2', count: 8, rangeId: 1, description: 'Completada' },
+            { id: 2, name: 'Configuración Kafka QA1/QA2 con LB/Kerberos/TLS', count: 4, rangeId: 1, description: 'Completada' },
+            { id: 3, name: 'Pruebas conexión Kafka NLB y conectividad', count: 6, rangeId: 1, description: 'Completada' },
+            { id: 4, name: 'Creación entornos QA2 (Kafka, Data Eng, Data Mart)', count: 3, rangeId: 1, description: 'Completada' },
+            { id: 5, name: 'Configurar políticas Ranger para SRM', count: 3, rangeId: 2, description: 'Completada' },
+            { id: 6, name: 'Pruebas listado tópicos Kafka', count: 4, rangeId: 2, description: 'Completada' },
+            { id: 7, name: 'Configuración SRM bidireccional', count: 2, rangeId: 2, description: 'Completada' },
+            { id: 8, name: 'Pre-checks y validación NLB Kafka HA', count: 3, rangeId: 2, description: 'Completada' },
+            { id: 9, name: 'Failover: AZ impairment / NLB target loss', count: 1, rangeId: 2, description: 'En progreso' },
+            { id: 10, name: 'Network flap / connection churn', count: 1, rangeId: 2, description: 'En progreso' },
+            { id: 11, name: 'Failback (broker returns)', count: 1, rangeId: 2, description: 'En progreso' },
+            { id: 12, name: 'Data integrity checks', count: 1, rangeId: 2, description: 'En progreso' },
+            { id: 13, name: 'Security/TLS validation', count: 1, rangeId: 3, description: 'No iniciada' },
+            { id: 14, name: 'SRM outage', count: 1, rangeId: 3, description: 'No iniciada' },
+            { id: 15, name: 'Observability & alarms', count: 1, rangeId: 3, description: 'No iniciada' },
+            { id: 16, name: 'Consumer crash/restart', count: 1, rangeId: 3, description: 'No iniciada' }
+        ];
+
+        function drawHorizontalTimeline(filteredTasks) {
+            const timeline = document.getElementById('horizontal-timeline');
+            timeline.innerHTML = '';
+
+            if (filteredTasks.length === 0) {
+                timeline.innerHTML = '<li style="width: 100%; text-align: center; padding: 40px;">No hay tareas que coincidan con el filtro</li>';
+                return;
+            }
+
+            // Group tasks by ranges for better horizontal display
+            const tasksByRange = {};
+            filteredTasks.forEach(task => {
+                if (!tasksByRange[task.rangeId]) {
+                    tasksByRange[task.rangeId] = [];
+                }
+                tasksByRange[task.rangeId].push(task);
+            });
+
+            // Create timeline items for each range
+            Object.keys(tasksByRange).forEach((rangeId, index) => {
+                const tasks = tasksByRange[rangeId];
+                const range = ranges.find(r => r.id == rangeId);
+                const isEven = index % 2 === 0;
+
+                const li = document.createElement('li');
+                
+                const spanClass = isEven ? 'ps-sp-top' : 'ps-sp-bot';
+                const span = document.createElement('span');
+                span.className = spanClass;
+                span.textContent = String(index + 1).padStart(2, '0');
+
+                const handlerClass = isEven ? 'img-handler-top' : 'img-handler-bot';
+                const handlerDiv = document.createElement('div');
+                handlerDiv.className = handlerClass;
+                
+                // Create status icon based on most common status in range
+                const statusCounts = {};
+                tasks.forEach(task => {
+                    statusCounts[task.description] = (statusCounts[task.description] || 0) + 1;
+                });
+                const mostCommonStatus = Object.keys(statusCounts).reduce((a, b) => 
+                    statusCounts[a] > statusCounts[b] ? a : b
+                );
+
+                let iconClass = 'lni lni-timer';
+                let statusClass = 'status-pending';
+                if (mostCommonStatus === 'Completada') {
+                    iconClass = 'lni lni-checkmark';
+                    statusClass = 'status-completed';
+                } else if (mostCommonStatus === 'En progreso') {
+                    iconClass = 'lni lni-reload';
+                    statusClass = 'status-progress';
+                }
+
+                const statusIcon = document.createElement('div');
+                statusIcon.className = `status-icon ${statusClass}`;
+                statusIcon.innerHTML = `<i class="${iconClass}"></i>`;
+                handlerDiv.appendChild(statusIcon);
+
+                const contentClass = isEven ? 'ps-bot' : 'ps-top';
+                const contentDiv = document.createElement('div');
+                contentDiv.className = contentClass;
+                
+                const taskSummary = tasks.length > 1 ? 
+                    `${tasks.length} tareas en ${range ? range.label : 'Semana desconocida'}` :
+                    `${tasks[0].count} ${tasks[0].name}`;
+
+                const p = document.createElement('p');
+                p.innerHTML = `<strong>${taskSummary}</strong><br>
+                    <small>Estado: ${mostCommonStatus}</small>`;
+                contentDiv.appendChild(p);
+
+                li.appendChild(handlerDiv);
+                li.appendChild(contentDiv);
+                li.appendChild(span);
+                
+                timeline.appendChild(li);
+            });
+        }
+
+        function filterTasks() {
+            const filter = document.getElementById('task-filter-h').value;
+            let filteredTasks;
+            
+            if (filter === 'all') {
+                filteredTasks = tasks;
+            } else {
+                filteredTasks = tasks.filter(task => task.description === filter);
+            }
+            
+            drawHorizontalTimeline(filteredTasks);
+        }
+
+        function changeColorTheme() {
+            const theme = document.getElementById('color-theme-h').value;
+            const container = document.querySelector('.ps-timeline-sec');
+            
+            // Remove all theme classes
+            container.className = container.className.replace(/theme-\w+/g, '');
+            
+            // Add selected theme
+            if (theme !== 'default') {
+                container.classList.add(`theme-${theme}`);
+            }
+        }
+
+        function saveAsImage() {
+            const element = document.getElementById('timeline-container');
+            
+            setTimeout(() => {
+                html2canvas(element, {
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    scale: 1.5,
+                    width: element.scrollWidth,
+                    height: element.scrollHeight
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'timeline-horizontal-' + new Date().toISOString().slice(0,10) + '.png';
+                    link.href = canvas.toDataURL('image/png', 0.9);
+                    
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    alert('¡Imagen guardada exitosamente!');
+                }).catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al generar la imagen: ' + error.message);
+                });
+            }, 300);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            drawHorizontalTimeline(tasks);
+        });
+    </script>
+</body>
+</html>

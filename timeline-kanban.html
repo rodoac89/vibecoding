@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Kanban - Plan de Despliegue Bancolombia</title>
+    <link rel="stylesheet" href="https://cdn.lineicons.com/3.0/lineicons.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body { 
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; 
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.5);
+        }
+        
+        .controls {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .controls select, .controls button {
+            margin: 0 8px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            font-family: inherit;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .controls button {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .controls button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        /* Kanban Board */
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .kanban-column {
+            background: rgba(255,255,255,0.95);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            min-height: 400px;
+        }
+        
+        .column-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f1f3f4;
+        }
+        
+        .column-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .column-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .column-count {
+            background: #ecf0f1;
+            color: #7f8c8d;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        /* Status Colors */
+        .status-completed .column-icon { background: #27ae60; }
+        .status-completed .column-title { color: #27ae60; }
+        
+        .status-progress .column-icon { background: #f39c12; }
+        .status-progress .column-title { color: #f39c12; }
+        
+        .status-pending .column-icon { background: #e74c3c; }
+        .status-pending .column-title { color: #e74c3c; }
+        
+        /* Task Cards */
+        .task-card {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #ddd;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        
+        .status-completed .task-card {
+            border-left-color: #27ae60;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fff9 100%);
+        }
+        
+        .status-progress .task-card {
+            border-left-color: #f39c12;
+            background: linear-gradient(135deg, #ffffff 0%, #fffcf8 100%);
+        }
+        
+        .status-pending .task-card {
+            border-left-color: #e74c3c;
+            background: linear-gradient(135deg, #ffffff 0%, #fff8f8 100%);
+        }
+        
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .card-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .card-week {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        
+        .card-count {
+            background: #ecf0f1;
+            color: #2c3e50;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .card-description {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            line-height: 1.4;
+        }
+        
+        .card-priority {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 8px;
+        }
+        
+        .priority-high {
+            background: #fee;
+            color: #e74c3c;
+        }
+        
+        .priority-medium {
+            background: #fff8e7;
+            color: #f39c12;
+        }
+        
+        .priority-low {
+            background: #f0fff4;
+            color: #27ae60;
+        }
+        
+        /* Empty State */
+        .empty-column {
+            text-align: center;
+            color: #bdc3c7;
+            font-style: italic;
+            padding: 40px 20px;
+        }
+        
+        .empty-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+        
+        /* Stats Dashboard */
+        .stats-dashboard {
+            background: rgba(255,255,255,0.95);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60 0%, #2ecc71 100%);
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+        
+        /* Animations */
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .kanban-board {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .kanban-column {
+                padding: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .controls select, .controls button {
+                display: block;
+                width: calc(100% - 40px);
+                margin: 5px 20px;
+            }
+        }
+        
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .controls, .back-btn {
+                display: none;
+            }
+            
+            .kanban-column {
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index-main.html" class="back-btn">← Regresar al selector</a>
+    
+    <div class="header">
+        <h1>Timeline Kanban</h1>
+        <p>Plan de Despliegue Bancolombia — Tablero de estado por columnas</p>
+    </div>
+    
+    <div class="stats-dashboard" id="stats-dashboard">
+        <!-- Stats will be generated here -->
+    </div>
+    
+    <div class="controls">
+        <select id="week-filter-k" onchange="filterByWeek()">
+            <option value="all">Todas las semanas</option>
+            <option value="1">Semana 1: 22-26 Sep</option>
+            <option value="2">Semana 2: 29 Sep - 03 Oct</option>
+            <option value="3">Semana 3: 06-10 Oct</option>
+        </select>
+        
+        <select id="priority-filter-k" onchange="filterByPriority()">
+            <option value="all">Todas las prioridades</option>
+            <option value="high">Alta prioridad</option>
+            <option value="medium">Prioridad media</option>
+            <option value="low">Baja prioridad</option>
+        </select>
+        
+        <button onclick="saveAsImage()">Exportar imagen</button>
+    </div>
+    
+    <div class="kanban-board" id="kanban-board">
+        <!-- Kanban columns will be generated here -->
+    </div>
+
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script>
+        let ranges = [
+            { id: 1, start: '2025-09-22', end: '2025-09-26', label: 'Semana 1: 22-26 Sep' },
+            { id: 2, start: '2025-09-29', end: '2025-10-03', label: 'Semana 2: 29 Sep - 03 Oct' },
+            { id: 3, start: '2025-10-06', end: '2025-10-10', label: 'Semana 3: 06-10 Oct' }
+        ];
+        
+        let tasks = [
+            { id: 1, name: 'Migración políticas Ranger QA1 a QA2', count: 8, rangeId: 1, description: 'Completada', priority: 'high' },
+            { id: 2, name: 'Configuración Kafka QA1/QA2 con LB/Kerberos/TLS', count: 4, rangeId: 1, description: 'Completada', priority: 'high' },
+            { id: 3, name: 'Pruebas conexión Kafka NLB y conectividad', count: 6, rangeId: 1, description: 'Completada', priority: 'medium' },
+            { id: 4, name: 'Creación entornos QA2 (Kafka, Data Eng, Data Mart)', count: 3, rangeId: 1, description: 'Completada', priority: 'high' },
+            { id: 5, name: 'Configurar políticas Ranger para SRM', count: 3, rangeId: 2, description: 'Completada', priority: 'medium' },
+            { id: 6, name: 'Pruebas listado tópicos Kafka', count: 4, rangeId: 2, description: 'Completada', priority: 'medium' },
+            { id: 7, name: 'Configuración SRM bidireccional', count: 2, rangeId: 2, description: 'Completada', priority: 'low' },
+            { id: 8, name: 'Pre-checks y validación NLB Kafka HA', count: 3, rangeId: 2, description: 'Completada', priority: 'high' },
+            { id: 9, name: 'Failover: AZ impairment / NLB target loss', count: 1, rangeId: 2, description: 'En progreso', priority: 'high' },
+            { id: 10, name: 'Network flap / connection churn', count: 1, rangeId: 2, description: 'En progreso', priority: 'high' },
+            { id: 11, name: 'Failback (broker returns)', count: 1, rangeId: 2, description: 'En progreso', priority: 'medium' },
+            { id: 12, name: 'Data integrity checks', count: 1, rangeId: 2, description: 'En progreso', priority: 'medium' },
+            { id: 13, name: 'Security/TLS validation', count: 1, rangeId: 3, description: 'No iniciada', priority: 'high' },
+            { id: 14, name: 'SRM outage', count: 1, rangeId: 3, description: 'No iniciada', priority: 'medium' },
+            { id: 15, name: 'Observability & alarms', count: 1, rangeId: 3, description: 'No iniciada', priority: 'low' },
+            { id: 16, name: 'Consumer crash/restart', count: 1, rangeId: 3, description: 'No iniciada', priority: 'low' }
+        ];
+
+        let currentTasks = [...tasks];
+
+        const statusConfig = {
+            'Completada': {
+                title: 'Completadas',
+                icon: '✓',
+                class: 'status-completed',
+                description: 'Tareas finalizadas exitosamente'
+            },
+            'En progreso': {
+                title: 'En Progreso',
+                icon: '○',
+                class: 'status-progress',
+                description: 'Tareas actualmente en desarrollo'
+            },
+            'No iniciada': {
+                title: 'No Iniciadas',
+                icon: '●',
+                class: 'status-pending',
+                description: 'Tareas programadas para el futuro'
+            }
+        };
+
+        function updateStatsBoard(filteredTasks) {
+            const stats = {
+                total: filteredTasks.length,
+                completed: filteredTasks.filter(t => t.description === 'Completada').length,
+                progress: filteredTasks.filter(t => t.description === 'En progreso').length,
+                pending: filteredTasks.filter(t => t.description === 'No iniciada').length,
+                high: filteredTasks.filter(t => t.priority === 'high').length,
+                medium: filteredTasks.filter(t => t.priority === 'medium').length,
+                low: filteredTasks.filter(t => t.priority === 'low').length
+            };
+
+            const completedPercentage = stats.total > 0 ? Math.round(stats.completed / stats.total * 100) : 0;
+            const progressPercentage = stats.total > 0 ? Math.round((stats.completed + stats.progress * 0.5) / stats.total * 100) : 0;
+
+            const statsBoard = document.getElementById('stats-dashboard');
+            statsBoard.innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-number">${stats.total}</span>
+                        <span class="stat-label">Total Tareas</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">${stats.completed}</span>
+                        <span class="stat-label">Completadas</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">${stats.progress}</span>
+                        <span class="stat-label">En Progreso</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">${stats.pending}</span>
+                        <span class="stat-label">Pendientes</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">${stats.high}</span>
+                        <span class="stat-label">Alta Prioridad</span>
+                    </div>
+                </div>
+                <div style="text-align: center; color: #7f8c8d; margin-bottom: 10px;">
+                    Progreso general: ${completedPercentage}% completado
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${progressPercentage}%"></div>
+                </div>
+            `;
+        }
+
+        function createTaskCard(task) {
+            const range = ranges.find(r => r.id === task.rangeId);
+            const priorityClass = `priority-${task.priority}`;
+            const priorityText = task.priority === 'high' ? 'Alta' : task.priority === 'medium' ? 'Media' : 'Baja';
+            
+            return `
+                <div class="task-card fade-in-up">
+                    <div class="card-title">${task.name}</div>
+                    <div class="card-meta">
+                        <span class="card-week">${range ? range.label : 'Semana desconocida'}</span>
+                        <span class="card-count">${task.count} elemento${task.count !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="card-description">
+                        ${task.description === 'Completada' ? 'Finalizada con éxito. Objetivos cumplidos satisfactoriamente.' : 
+                          task.description === 'En progreso' ? 'En desarrollo activo. Progreso continuo supervisado.' : 
+                          'Programada para ejecución. Esperando inicio de actividades.'}
+                    </div>
+                    <span class="card-priority ${priorityClass}">Prioridad ${priorityText}</span>
+                </div>
+            `;
+        }
+
+        function drawKanbanBoard(filteredTasks) {
+            const board = document.getElementById('kanban-board');
+            board.innerHTML = '';
+
+            // Group tasks by status
+            const tasksByStatus = {};
+            Object.keys(statusConfig).forEach(status => {
+                tasksByStatus[status] = filteredTasks.filter(task => task.description === status);
+            });
+
+            // Create columns
+            Object.keys(statusConfig).forEach((status, columnIndex) => {
+                const config = statusConfig[status];
+                const statusTasks = tasksByStatus[status];
+                
+                const column = document.createElement('div');
+                column.className = `kanban-column ${config.class} fade-in-up`;
+                column.style.animationDelay = `${columnIndex * 0.1}s`;
+                
+                let columnContent = `
+                    <div class="column-header">
+                        <div class="column-title">
+                            <div class="column-icon">${config.icon}</div>
+                            ${config.title}
+                        </div>
+                        <div class="column-count">${statusTasks.length}</div>
+                    </div>
+                `;
+
+                if (statusTasks.length === 0) {
+                    columnContent += `
+                        <div class="empty-column">
+                            <div class="empty-icon">📋</div>
+                            <div>No hay tareas en esta categoría</div>
+                        </div>
+                    `;
+                } else {
+                    statusTasks.forEach((task, index) => {
+                        const cardElement = createTaskCard(task);
+                        columnContent += cardElement;
+                    });
+                }
+
+                column.innerHTML = columnContent;
+                board.appendChild(column);
+            });
+
+            updateStatsBoard(filteredTasks);
+        }
+
+        function filterByWeek() {
+            const weekFilter = document.getElementById('week-filter-k').value;
+            
+            if (weekFilter === 'all') {
+                currentTasks = [...tasks];
+            } else {
+                const weekId = parseInt(weekFilter);
+                currentTasks = tasks.filter(task => task.rangeId === weekId);
+            }
+            
+            filterByPriority();
+        }
+
+        function filterByPriority() {
+            const priorityFilter = document.getElementById('priority-filter-k').value;
+            let filteredTasks = [...currentTasks];
+            
+            if (priorityFilter !== 'all') {
+                filteredTasks = currentTasks.filter(task => task.priority === priorityFilter);
+            }
+            
+            drawKanbanBoard(filteredTasks);
+        }
+
+        function saveAsImage() {
+            const element = document.querySelector('body');
+            
+            setTimeout(() => {
+                html2canvas(element, {
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: null,
+                    scale: 1.5,
+                    width: window.innerWidth,
+                    height: element.scrollHeight
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'timeline-kanban-' + new Date().toISOString().slice(0,10) + '.png';
+                    link.href = canvas.toDataURL('image/png', 0.9);
+                    
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    alert('Imagen exportada exitosamente.');
+                }).catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al exportar la imagen: ' + error.message);
+                });
+            }, 300);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            filterByWeek();
+        });
+    </script>
+</body>
+</html>

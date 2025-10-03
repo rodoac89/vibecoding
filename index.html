@@ -3,557 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timeline de Tareas - Plan de Despliegue Bancolombia</title>
-    <!-- LineIcons CSS for icons (as used in CodePen) -->
-    <link rel="stylesheet" href="https://cdn.lineicons.com/3.0/lineicons.css">
+    <title>Timeline de Tareas - Selector de Vistas</title>
     <style>
         body { 
             font-family: 'Arial', sans-serif; 
-            margin: 20px; 
-            background-color: #f6f9fc;
-        }
-        .container { 
-            display: flex; 
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .inputs { 
-            width: 30%; 
-            padding: 20px; 
-            border-right: 1px solid #ccc; 
-            background: #fafafa;
-        }
-        .visual { 
-            width: 70%; 
-            padding: 20px; 
-            position: relative;
-        }
-        button { 
-            margin-top: 10px; 
-            padding: 8px 12px; 
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #0056b3;
-        }
-        input { 
-            width: 100%; 
-            margin-bottom: 10px; 
-            padding: 8px; 
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        label { 
-            display: block; 
-            margin-bottom: 5px; 
-            font-weight: bold;
-            color: #333;
-        }
-        h1, h2 {
-            color: #333;
-            text-align: center;
-        }
-        /* CSS from CodePen for vertical timeline */
-        * {
-          box-sizing: border-box;
-        }
-        html {
-          font-size: 14px;
-        }
-        .timeline {
-          display: flex;
-          flex-direction: column;
-          margin: 20px auto;
-          position: relative;
-          min-height: 100px;
-          background: transparent;
-        }
-        .timeline__event {
-          position: relative;
-          display: flex;
-          margin: 20px 0;
-          border-radius: 6px;
-          align-self: center;
-          width: 50vw;
-        }
-        .timeline__event:nth-child(2n+1) {
-          flex-direction: row-reverse;
-        }
-        .timeline__event:nth-child(2n+1) .timeline__event__date {
-          border-radius: 0 6px 6px 0;
-        }
-        .timeline__event:nth-child(2n+1) .timeline__event__content {
-          border-radius: 6px 0 0 6px;
-        }
-        .timeline__event:nth-child(2n+1) .timeline__event__icon {
-          border-radius: 6px 0 0 6px;
-        }
-        .timeline__event:nth-child(2n+1) .timeline__event__icon:before, .timeline__event:nth-child(2n+1) .timeline__event__icon:after {
-          left: auto;
-          right: -6px;
-          border-left: 0;
-          border-right: 6px solid #94aec5;
-        }
-        .timeline__event:nth-child(2n+1) .timeline__event__icon:before {
-          right: -8px;
-        }
-        .timeline__event__icon {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #fff;
-          padding: 20px;
-          align-self: start;
-          margin: 0 20px;
-          background: #f6f6f6;
-          border-radius: 0 6px 6px 0;
-          width: 40px;
-          box-shadow: 0 0 0 4px #f6f6f6;
-          position: relative;
-        }
-        .timeline__event__icon i {
-          font-size: 32px;
-        }
-        .timeline__event__icon:before, .timeline__event__icon:after {
-          content: "";
-          width: 0;
-          height: 0;
-          border-style: solid;
-          border-width: 6px 0 6px 6px;
-          border-color: transparent transparent transparent #f6f6f6;
-          position: absolute;
-          top: 50%;
-          left: -6px;
-          margin-top: -6px;
-          z-index: 1;
-        }
-        .timeline__event__icon:before {
-          border-color: transparent transparent transparent #fff;
-          left: -8px;
-          z-index: 2;
-        }
-        .timeline__event__date {
-          color: #fff;
-          padding: 20px;
-          background: #f6a4ec;
-          align-self: start;
-          border-radius: 6px 0 0 6px;
-          box-shadow: 0 30px 60px -12px rgba(50, 50, 93, 0.25), 0 18px 36px -18px rgba(0, 0, 0, 0.3), 0 -12px 36px -8px rgba(0, 0, 0, 0.025);
-        }
-        .timeline__event__content {
-          padding: 20px;
-          box-shadow: 0 30px 60px -12px rgba(50, 50, 93, 0.25), 0 18px 36px -18px rgba(0, 0, 0, 0.3), 0 -12px 36px -8px rgba(0, 0, 0, 0.025);
-          background: #fff;
-          border-radius: 0 6px 6px 0;
-          width: calc(40vw - 84px);
-          min-height: 100px;
-        }
-        .timeline__event__title {
-          font-size: 1.2rem;
-          line-height: 1.4;
-          text-transform: uppercase;
-          font-weight: 600;
-          color: #9251ac;
-          letter-spacing: 1.5px;
-        }
-        .timeline__event__description {
-          line-height: 1.4;
-        }
-        .timeline__event--type2 .timeline__event__date {
-          background: #87bbfe;
-        }
-        .timeline__event--type2 .timeline__event__icon {
-          background: #555ac0;
-          color: #fff;
-          box-shadow: 0 0 0 4px #87bbfe;
-        }
-        .timeline__event--type2 .timeline__event__icon:before, .timeline__event--type2 .timeline__event__icon:after {
-          border-color: transparent transparent transparent #555ac0;
-        }
-        .timeline__event--type2 .timeline__event__icon:before {
-          border-color: transparent transparent transparent #87bbfe;
-        }
-        .timeline__event--type2 .timeline__event__title {
-          color: #555ac0;
-        }
-        .timeline__event--type3 .timeline__event__date {
-          background-color: #24b47e;
-        }
-        .timeline__event--type3 .timeline__event__icon {
-          background: #aff1b6;
-          color: #fff;
-          box-shadow: 0 0 0 4px #24b47e;
-        }
-        .timeline__event--type3 .timeline__event__icon:before, .timeline__event--type3 .timeline__event__icon:after {
-          border-color: transparent transparent transparent #aff1b6;
-        }
-        .timeline__event--type3 .timeline__event__icon:before {
-          border-color: transparent transparent transparent #24b47e;
-        }
-        .timeline__event--type3 .timeline__event__title {
-          color: #24b47e;
-        }
-        @media only screen and (max-width: 992px) {
-          .timeline__event {
-            flex-direction: column;
-            width: 100%;
-          }
-          .timeline__event__content {
-            width: 100%;
-          }
-          .timeline__event__date, .timeline__event__icon {
-            border-radius: 6px 6px 0 0;
-          }
-          .timeline__event__icon {
             margin: 0;
-            width: 100%;
-            border-radius: 6px 6px 0 0;
-          }
-          .timeline__event__date {
-            border-radius: 0;
-          }
-          .timeline__event:nth-child(2n+1) {
-            flex-direction: column;
-          }
-          .timeline__event:nth-child(2n+1) .timeline__event__date, .timeline__event:nth-child(2n+1) .timeline__event__icon {
-            border-radius: 6px 6px 0 0;
-          }
-          .timeline__event:nth-child(2n+1) .timeline__event__content {
-            border-radius: 0 0 6px 6px;
-          }
-        }
-        .animated {
-          animation-duration: 1s;
-          animation-fill-mode: both;
-        }
-        .fadeInUp {
-          animation-name: fadeInUp;
-        }
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translate3d(0, 100%, 0);
-          }
-          to {
-            opacity: 1;
-            transform: translate3d(0, 0, 0);
-          }
-        }
-        .delay-1s {
-          animation-delay: 1s;
-        }
-        .delay-2s {
-          animation-delay: 2s;
-        }
-        .delay-3s {
-          animation-delay: 3s;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
         
-        /* Estilos para mejorar captura de imagen */
-        .timeline__event__icon {
-          -webkit-print-color-adjust: exact;
-          print-color-adjust: exact;
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
         }
         
-        .timeline__event__date, .timeline__event__content {
-          -webkit-print-color-adjust: exact;
-          print-color-adjust: exact;
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .views-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .view-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .view-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .view-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .view-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .view-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .view-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .view-features li {
+            background: #f8f9fa;
+            margin: 5px 0;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        .btn-view {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-view:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
     </style>
 </head>
 <body>
-    <h1>Timeline Interactivo de Tareas</h1>
-    <div class="container">
-        <div class="inputs">
-            <h2>Agregar Rango de Días (Semana)</h2>
-            <label for="start-date">Fecha Inicio (YYYY-MM-DD):</label>
-            <input type="date" id="start-date" value="2025-09-22">
-            <label for="end-date">Fecha Fin (YYYY-MM-DD):</label>
-            <input type="date" id="end-date" value="2025-09-26">
-            <button onclick="addRange()">Agregar Rango</button>
-
-            <h2>Agregar Tarea</h2>
-            <label for="task-name">Nombre de Tarea:</label>
-            <input type="text" id="task-name" placeholder="Ej: Migración de políticas Ranger">
-            <label for="task-count">Número (ej. completadas):</label>
-            <input type="number" id="task-count" value="1" min="0">
-            <label for="task-range">Asignar a Rango (selecciona después de agregar):</label>
-            <select id="task-range"></select>
-            <button onclick="addTask()">Agregar Tarea</button>
-
-            <button onclick="saveAsImage()">Guardar Timeline como Imagen</button>
-            <button onclick="saveFullImage()">Guardar Vista Completa</button>
-        </div>
-        <div class="visual">
-            <h2>Visualización de Timeline</h2>
-            <p><em>Precargadas las últimas tareas del 03/10/2025 y resúmenes por semana basados en el log diario.</em></p>
-            <div id="timeline-container" style="min-height: 200px; padding: 20px; background: #fafafa; border-radius: 8px;"></div> <!-- Changed from SVG to div for CSS timeline -->
-        </div>
+    <div class="header">
+        <h1>🎯 Timeline de Tareas</h1>
+        <p>Plan de Despliegue Bancolombia - Selecciona tu vista preferida</p>
     </div>
-
-    <!-- html2canvas for saving as image -->
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    <script>
-        let ranges = [
-            { id: 1, start: '2025-09-22', end: '2025-09-26', label: 'Semana 1: 22-26 Sep' },
-            { id: 2, start: '2025-09-29', end: '2025-10-03', label: 'Semana 2: 29 Sep - 03 Oct' },
-            { id: 3, start: '2025-10-06', end: '2025-10-10', label: 'Semana 3: 06-10 Oct' }
-        ];
-        let tasks = [
-            // Semana 1
-            { id: 1, name: 'Migración políticas Ranger QA1 a QA2', count: 8, rangeId: 1, description: 'Completada' },
-            { id: 2, name: 'Configuración Kafka QA1/QA2 con LB/Kerberos/TLS', count: 4, rangeId: 1, description: 'Completada' },
-            { id: 3, name: 'Pruebas conexión Kafka NLB y conectividad', count: 6, rangeId: 1, description: 'Completada' },
-            { id: 4, name: 'Creación entornos QA2 (Kafka, Data Eng, Data Mart)', count: 3, rangeId: 1, description: 'Completada' },
-
-            // Semana 2
-            { id: 5, name: 'Configurar políticas Ranger para SRM', count: 3, rangeId: 2, description: 'Completada' },
-            { id: 6, name: 'Pruebas listado tópicos Kafka', count: 4, rangeId: 2, description: 'Completada' },
-            { id: 7, name: 'Configuración SRM bidireccional', count: 2, rangeId: 2, description: 'Completada' },
-            { id: 8, name: 'Pre-checks y validación NLB Kafka HA', count: 3, rangeId: 2, description: 'Completada' },
-            { id: 9, name: 'Failover: AZ impairment / NLB target loss', count: 1, rangeId: 2, description: 'En progreso' },
-            { id: 10, name: 'Network flap / connection churn', count: 1, rangeId: 2, description: 'En progreso' },
-            { id: 11, name: 'Failback (broker returns)', count: 1, rangeId: 2, description: 'En progreso' },
-            { id: 12, name: 'Data integrity checks', count: 1, rangeId: 2, description: 'En progreso' },
-            { id: 13, name: 'Latency/throughput under failover', count: 1, rangeId: 2, description: 'En progreso' },
-            { id: 14, name: 'Exactly-Once Semantics (EOS)', count: 1, rangeId: 2, description: 'En progreso' },
-            { id: 15, name: 'Consumer dedupe', count: 1, rangeId: 2, description: 'En progreso' },
-            { id: 16, name: 'Kudu schema for idempotency', count: 1, rangeId: 2, description: 'En progreso' },
-            { id: 17, name: 'Kudu UPSERT correctness', count: 1, rangeId: 2, description: 'En progreso' },
-            { id: 18, name: 'Políticas de Kudu en Ranger para SRM', count: 1, rangeId: 2, description: 'En progreso' },
-            { id: 19, name: 'Sincronización de Kudu', count: 1, rangeId: 2, description: 'En progreso' },
-            { id: 20, name: 'Configuración de Kudu', count: 1, rangeId: 2, description: 'En progreso' },
-            { id: 21, name: 'Failover: single broker down', count: 1, rangeId: 2, description: 'En progreso' },
-
-            // Semana 3
-            { id: 22, name: 'Security/TLS validation', count: 1, rangeId: 3, description: 'No iniciada' },
-            { id: 23, name: 'SRM outage', count: 1, rangeId: 3, description: 'No iniciada' },
-            { id: 24, name: 'Observability & alarms', count: 1, rangeId: 3, description: 'No iniciada' },
-            { id: 25, name: 'Conflict race', count: 1, rangeId: 3, description: 'No iniciada' },
-            { id: 26, name: 'Consumer crash/restart', count: 1, rangeId: 3, description: 'No iniciada' }
-        ];
-
-        function updateTaskRangeSelect() {
-            const select = document.getElementById('task-range');
-            select.innerHTML = '';
-            ranges.forEach(range => {
-                const option = document.createElement('option');
-                option.value = range.id;
-                option.textContent = range.label;
-                select.appendChild(option);
-            });
-        }
-
-        function addRange() {
-            const start = document.getElementById('start-date').value;
-            const end = document.getElementById('end-date').value;
-            if (start && end) {
-                const id = ranges.length + 1;
-                const label = `Semana ${id}: ${start.split('-')[2]}-${end.split('-')[2]} ${start.split('-')[1]}`;
-                ranges.push({ id, start, end, label });
-                updateTaskRangeSelect();
-                drawTimeline();
-            }
-        }
-
-        function addTask() {
-            const name = document.getElementById('task-name').value;
-            const count = document.getElementById('task-count').value;
-            const rangeId = parseInt(document.getElementById('task-range').value);
-            if (name && count && rangeId) {
-                const id = tasks.length + 1;
-                tasks.push({ id, name, count: parseInt(count), rangeId, description: 'Nueva tarea' });
-                document.getElementById('task-name').value = '';
-                document.getElementById('task-count').value = 1;
-                drawTimeline();
-            }
-        }
-
-        function drawTimeline() {
-            const container = document.getElementById('timeline-container');
-            container.innerHTML = '';
-
-            if (tasks.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">No hay tareas para mostrar</p>';
-                return;
-            }
-
-            const timelineDiv = document.createElement('div');
-            timelineDiv.className = 'timeline';
-
-            tasks.forEach((task, index) => {
-                const typeClass = `timeline__event--type${(index % 3) + 1}`;
-                const eventDiv = document.createElement('div');
-                eventDiv.className = `timeline__event animated fadeInUp delay-${(index % 3) + 1}s ${typeClass}`;
-
-                const iconDiv = document.createElement('div');
-                iconDiv.className = 'timeline__event__icon';
-                iconDiv.innerHTML = '<i class="lni lni-timer"></i>'; // Example icon; change as needed
-
-                const dateDiv = document.createElement('div');
-                dateDiv.className = 'timeline__event__date';
-                // Find range label for date
-                const range = ranges.find(r => r.id === task.rangeId);
-                dateDiv.textContent = range ? range.label.split(': ')[1] : 'Unknown';
-
-                const contentDiv = document.createElement('div');
-                contentDiv.className = 'timeline__event__content';
-
-                const titleDiv = document.createElement('div');
-                titleDiv.className = 'timeline__event__title';
-                titleDiv.textContent = `${task.count} ${task.name}`;
-
-                const descDiv = document.createElement('div');
-                descDiv.className = 'timeline__event__description';
-                descDiv.innerHTML = `<p>${task.description || 'No description available'}</p>`;
-
-                contentDiv.appendChild(titleDiv);
-                contentDiv.appendChild(descDiv);
-
-                eventDiv.appendChild(iconDiv);
-                eventDiv.appendChild(dateDiv);
-                eventDiv.appendChild(contentDiv);
-
-                timelineDiv.appendChild(eventDiv);
-            });
-
-            container.appendChild(timelineDiv);
-            
-            // Debug: log the generated content
-            console.log('Timeline generated with', tasks.length, 'tasks');
-            console.log('Container dimensions:', container.offsetWidth, 'x', container.offsetHeight);
-        }
-
-        function saveAsImage() {
-            const element = document.getElementById('timeline-container');
-            
-            // Temporarily remove animations and complex styles for better capture
-            const timeline = element.querySelector('.timeline');
-            const events = element.querySelectorAll('.timeline__event');
-            
-            // Remove animations temporarily
-            events.forEach(event => {
-                event.classList.remove('animated', 'fadeInUp', 'delay-1s', 'delay-2s', 'delay-3s');
-                event.style.opacity = '1';
-                event.style.transform = 'none';
-            });
-            
-            // Force immediate render
-            element.style.opacity = '1';
-            element.style.visibility = 'visible';
-            
-            // Wait a bit for styles to settle
-            setTimeout(() => {
-                console.log('Capturing element:', element);
-                console.log('Element dimensions:', element.offsetWidth, 'x', element.offsetHeight);
-                console.log('Element visible:', element.offsetWidth > 0 && element.offsetHeight > 0);
-                
-                html2canvas(element, {
-                    useCORS: true,
-                    allowTaint: true,
-                    backgroundColor: '#ffffff',
-                    logging: true, // Enable logging to debug
-                    scale: 2,
-                    width: Math.max(element.scrollWidth, element.offsetWidth),
-                    height: Math.max(element.scrollHeight, element.offsetHeight),
-                    scrollX: 0,
-                    scrollY: 0,
-                    ignoreElements: function(element) {
-                        // Skip elements that might cause issues
-                        return element.tagName === 'SCRIPT' || element.tagName === 'STYLE';
-                    }
-                }).then(canvas => {
-                    console.log('Canvas created:', canvas.width, 'x', canvas.height);
-                    
-                    // Check if canvas has actual content
-                    const ctx = canvas.getContext('2d');
-                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    const hasContent = imageData.data.some((pixel, index) => {
-                        // Check if any pixel is not white (255) or transparent (0)
-                        if (index % 4 === 3) return false; // Skip alpha channel
-                        return pixel !== 255 && pixel !== 0;
-                    });
-                    
-                    if (!hasContent) {
-                        throw new Error('Canvas appears to be empty or all white');
-                    }
-                    
-                    const link = document.createElement('a');
-                    link.download = 'timeline-' + new Date().toISOString().slice(0,10) + '.png';
-                    link.href = canvas.toDataURL('image/png', 0.9);
-                    
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    
-                    alert('¡Imagen guardada exitosamente!');
-                    
-                    // Restore animations
-                    events.forEach((event, index) => {
-                        const typeClass = `timeline__event--type${(index % 3) + 1}`;
-                        event.className = `timeline__event animated fadeInUp delay-${(index % 3) + 1}s ${typeClass}`;
-                    });
-                    
-                }).catch(error => {
-                    console.error('Error capturing image:', error);
-                    alert('Error al generar la imagen: ' + error.message);
-                    
-                    // Restore animations even on error
-                    events.forEach((event, index) => {
-                        const typeClass = `timeline__event--type${(index % 3) + 1}`;
-                        event.className = `timeline__event animated fadeInUp delay-${(index % 3) + 1}s ${typeClass}`;
-                    });
-                });
-            }, 500);
-        }
-
-        function saveFullImage() {
-            const element = document.querySelector('.visual');
-            
-            // Remove animations temporarily
-            const events = document.querySelectorAll('.timeline__event');
-            events.forEach(event => {
-                event.classList.remove('animated', 'fadeInUp', 'delay-1s', 'delay-2s', 'delay-3s');
-                event.style.opacity = '1';
-                event.style.transform = 'none';
-            });
-            
-            setTimeout(() => {
-                html2canvas(element, {
-                    useCORS: true,
-                    allowTaint: true,
-                    backgroundColor: '#ffffff',
-                    logging: true,
-                    scale: 1.5,
-                    width: element.scrollWidth,
-                    height: element.scrollHeight
-                }).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = 'timeline-completo-' + new Date().toISOString().slice(0,10) + '.png';
-                    link.href = canvas.toDataURL('image/png', 0.9);
-                    
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    
-                    alert('¡Vista completa guardada exitosamente!');
-                }).catch(error => {
-                    console.error('Error capturing full image:', error);
-                    alert('Error: ' + error.message);
-                });
-            }, 300);
-        }
-
-        // Inicializar
-        document.addEventListener('DOMContentLoaded', function() {
-            updateTaskRangeSelect();
-            drawTimeline();
-        });
-    </script>
+    
+    <div class="views-grid">
+        <a href="timeline-vertical.html" class="view-card">
+            <span class="view-icon">📊</span>
+            <div class="view-title">Vista Vertical</div>
+            <div class="view-description">Timeline vertical con eventos alternados a ambos lados</div>
+            <ul class="view-features">
+                <li>✨ Animaciones suaves</li>
+                <li>🎨 Múltiples temas</li>
+                <li>📱 Responsive</li>
+            </ul>
+            <span class="btn-view">Ver Timeline Vertical</span>
+        </a>
+        
+        <a href="timeline-horizontal.html" class="view-card">
+            <span class="view-icon">➡️</span>
+            <div class="view-title">Vista Horizontal</div>
+            <div class="view-description">Timeline horizontal estilo proceso con pasos numerados</div>
+            <ul class="view-features">
+                <li>🔢 Pasos numerados</li>
+                <li>📏 Línea continua</li>
+                <li>📱 Mobile friendly</li>
+            </ul>
+            <span class="btn-view">Ver Timeline Horizontal</span>
+        </a>
+        
+        <a href="timeline-cards.html" class="view-card">
+            <span class="view-icon">🗃️</span>
+            <div class="view-title">Vista Cards</div>
+            <div class="view-description">Tarjetas organizadas en grid con efectos hover</div>
+            <ul class="view-features">
+                <li>🃏 Grid adaptable</li>
+                <li>✋ Efectos hover</li>
+                <li>🎯 Fácil navegación</li>
+            </ul>
+            <span class="btn-view">Ver Timeline Cards</span>
+        </a>
+        
+        <a href="timeline-simple.html" class="view-card">
+            <span class="view-icon">📋</span>
+            <div class="view-title">Vista Simple</div>
+            <div class="view-description">Lista limpia y ordenada con bordes coloridos</div>
+            <ul class="view-features">
+                <li>📝 Lista ordenada</li>
+                <li>🌈 Bordes coloridos</li>
+                <li>⚡ Carga rápida</li>
+            </ul>
+            <span class="btn-view">Ver Timeline Simple</span>
+        </a>
+        
+        <a href="timeline-minimal.html" class="view-card">
+            <span class="view-icon">⭐</span>
+            <div class="view-title">Vista Minimal</div>
+            <div class="view-description">Diseño minimalista y compacto</div>
+            <ul class="view-features">
+                <li>🎯 Diseño limpio</li>
+                <li>📏 Compacto</li>
+                <li>⚡ Ultrarrápido</li>
+            </ul>
+            <span class="btn-view">Ver Timeline Minimal</span>
+        </a>
+        
+        <a href="timeline-kanban.html" class="view-card">
+            <span class="view-icon">📊</span>
+            <div class="view-title">Vista Kanban</div>
+            <div class="view-description">Tablero Kanban con columnas por estado</div>
+            <ul class="view-features">
+                <li>📋 Por estados</li>
+                <li>🔄 Drag & drop</li>
+                <li>📈 Progreso visual</li>
+            </ul>
+            <span class="btn-view">Ver Timeline Kanban</span>
+        </a>
+    </div>
 </body>
 </html>
