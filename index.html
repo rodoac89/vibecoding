@@ -59,22 +59,6 @@
             text-align: center;
         }
         /* CSS from CodePen for vertical timeline */
-        $content-width: calc(40vw - 84px);
-        $margin: 20px;
-        $spacing: 20px;
-        $bdrs: 6px;
-        $circle-size: 40px;
-        $icon-size: 32px;
-        $bdrs-icon: 100%;
-
-        $color1: #9251ac;
-        $color2: #f6a4ec;
-
-        $color3: #87bbfe;
-        $color4: #555ac0;
-
-        $color5: #24b47e;
-        $color6: #aff1b6;
         * {
           box-sizing: border-box;
         }
@@ -86,6 +70,8 @@
           flex-direction: column;
           margin: 20px auto;
           position: relative;
+          min-height: 100px;
+          background: transparent;
         }
         .timeline__event {
           position: relative;
@@ -144,10 +130,12 @@
           top: 50%;
           left: -6px;
           margin-top: -6px;
+          z-index: 1;
         }
         .timeline__event__icon:before {
           border-color: transparent transparent transparent #fff;
           left: -8px;
+          z-index: 2;
         }
         .timeline__event__date {
           color: #fff;
@@ -163,6 +151,7 @@
           background: #fff;
           border-radius: 0 6px 6px 0;
           width: calc(40vw - 84px);
+          min-height: 100px;
         }
         .timeline__event__title {
           font-size: 1.2rem;
@@ -264,6 +253,17 @@
         .delay-3s {
           animation-delay: 3s;
         }
+        
+        /* Estilos para mejorar captura de imagen */
+        .timeline__event__icon {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+        
+        .timeline__event__date, .timeline__event__content {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
     </style>
 </head>
 <body>
@@ -286,15 +286,18 @@
             <select id="task-range"></select>
             <button onclick="addTask()">Agregar Tarea</button>
 
-            <button onclick="saveAsImage()">Guardar Gráfica como Imagen</button>
+            <button onclick="saveAsImage()">Guardar Timeline como Imagen</button>
+            <button onclick="saveFullImage()">Guardar Vista Completa</button>
         </div>
         <div class="visual">
-            <h2>Visualización de Timeline (con Tareas Precargadas del Documento)</h2>
+            <h2>Visualización de Timeline</h2>
             <p><em>Precargadas las últimas tareas del 03/10/2025 y resúmenes por semana basados en el log diario.</em></p>
-            <div id="timeline-container"></div> <!-- Changed from SVG to div for CSS timeline -->
+            <div id="timeline-container" style="min-height: 200px; padding: 20px; background: #fafafa; border-radius: 8px;"></div> <!-- Changed from SVG to div for CSS timeline -->
         </div>
     </div>
 
+    <!-- html2canvas for saving as image -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
         let ranges = [
             { id: 1, start: '2025-09-22', end: '2025-09-26', label: 'Semana 1: 22-26 Sep' },
@@ -375,6 +378,11 @@
             const container = document.getElementById('timeline-container');
             container.innerHTML = '';
 
+            if (tasks.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">No hay tareas para mostrar</p>';
+                return;
+            }
+
             const timelineDiv = document.createElement('div');
             timelineDiv.className = 'timeline';
 
@@ -415,11 +423,130 @@
             });
 
             container.appendChild(timelineDiv);
+            
+            // Debug: log the generated content
+            console.log('Timeline generated with', tasks.length, 'tasks');
+            console.log('Container dimensions:', container.offsetWidth, 'x', container.offsetHeight);
         }
 
         function saveAsImage() {
-            // Note: Saving div as image requires additional libraries like html2canvas; omitted for simplicity
-            alert('Guardar como imagen no implementado en este ejemplo. Usa screenshot del navegador.');
+            const element = document.getElementById('timeline-container');
+            
+            // Temporarily remove animations and complex styles for better capture
+            const timeline = element.querySelector('.timeline');
+            const events = element.querySelectorAll('.timeline__event');
+            
+            // Remove animations temporarily
+            events.forEach(event => {
+                event.classList.remove('animated', 'fadeInUp', 'delay-1s', 'delay-2s', 'delay-3s');
+                event.style.opacity = '1';
+                event.style.transform = 'none';
+            });
+            
+            // Force immediate render
+            element.style.opacity = '1';
+            element.style.visibility = 'visible';
+            
+            // Wait a bit for styles to settle
+            setTimeout(() => {
+                console.log('Capturing element:', element);
+                console.log('Element dimensions:', element.offsetWidth, 'x', element.offsetHeight);
+                console.log('Element visible:', element.offsetWidth > 0 && element.offsetHeight > 0);
+                
+                html2canvas(element, {
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    logging: true, // Enable logging to debug
+                    scale: 2,
+                    width: Math.max(element.scrollWidth, element.offsetWidth),
+                    height: Math.max(element.scrollHeight, element.offsetHeight),
+                    scrollX: 0,
+                    scrollY: 0,
+                    ignoreElements: function(element) {
+                        // Skip elements that might cause issues
+                        return element.tagName === 'SCRIPT' || element.tagName === 'STYLE';
+                    }
+                }).then(canvas => {
+                    console.log('Canvas created:', canvas.width, 'x', canvas.height);
+                    
+                    // Check if canvas has actual content
+                    const ctx = canvas.getContext('2d');
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const hasContent = imageData.data.some((pixel, index) => {
+                        // Check if any pixel is not white (255) or transparent (0)
+                        if (index % 4 === 3) return false; // Skip alpha channel
+                        return pixel !== 255 && pixel !== 0;
+                    });
+                    
+                    if (!hasContent) {
+                        throw new Error('Canvas appears to be empty or all white');
+                    }
+                    
+                    const link = document.createElement('a');
+                    link.download = 'timeline-' + new Date().toISOString().slice(0,10) + '.png';
+                    link.href = canvas.toDataURL('image/png', 0.9);
+                    
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    alert('¡Imagen guardada exitosamente!');
+                    
+                    // Restore animations
+                    events.forEach((event, index) => {
+                        const typeClass = `timeline__event--type${(index % 3) + 1}`;
+                        event.className = `timeline__event animated fadeInUp delay-${(index % 3) + 1}s ${typeClass}`;
+                    });
+                    
+                }).catch(error => {
+                    console.error('Error capturing image:', error);
+                    alert('Error al generar la imagen: ' + error.message);
+                    
+                    // Restore animations even on error
+                    events.forEach((event, index) => {
+                        const typeClass = `timeline__event--type${(index % 3) + 1}`;
+                        event.className = `timeline__event animated fadeInUp delay-${(index % 3) + 1}s ${typeClass}`;
+                    });
+                });
+            }, 500);
+        }
+
+        function saveFullImage() {
+            const element = document.querySelector('.visual');
+            
+            // Remove animations temporarily
+            const events = document.querySelectorAll('.timeline__event');
+            events.forEach(event => {
+                event.classList.remove('animated', 'fadeInUp', 'delay-1s', 'delay-2s', 'delay-3s');
+                event.style.opacity = '1';
+                event.style.transform = 'none';
+            });
+            
+            setTimeout(() => {
+                html2canvas(element, {
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    logging: true,
+                    scale: 1.5,
+                    width: element.scrollWidth,
+                    height: element.scrollHeight
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'timeline-completo-' + new Date().toISOString().slice(0,10) + '.png';
+                    link.href = canvas.toDataURL('image/png', 0.9);
+                    
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    alert('¡Vista completa guardada exitosamente!');
+                }).catch(error => {
+                    console.error('Error capturing full image:', error);
+                    alert('Error: ' + error.message);
+                });
+            }, 300);
         }
 
         // Inicializar
